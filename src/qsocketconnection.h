@@ -60,7 +60,10 @@ public:
 
     inline void connectToHost(const QString & hostName, quint16 port) {
         if (resolver_ == nullptr)
-            resolver_ = new asio::ip::tcp::resolver(stand_->get_io_service());
+            //resolver_ = new asio::ip::tcp::resolver(stand_->get_io_service());//替换asio至1.18独立版本，windows下此处编译报错
+            resolver_ = new asio::ip::tcp::resolver(stand_->context());//替换老asio接口get_io_service
+
+
         resolver_->async_resolve(asio::ip::tcp::resolver::query(hostName.toStdString(),QString::number(port).toStdString()),
                                  stand_->wrap(std::bind(&QSocketConnection::resolverHandle,
                                                         shared_from_this(), std::placeholders::_1,std::placeholders::_2)));
